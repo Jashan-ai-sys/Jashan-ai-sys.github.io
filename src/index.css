@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-hand: "Caveat", cursive;
+
+  --color-paper: #ffffff;
+  --color-panel: #f3f7f6;
+  --color-ink: #0c0c0d;
+  --color-mute: #565d61;
+  --color-line: #dbe3e1;
+  --color-teal: #0e7c72;
+  --color-marigold: #f0a52e;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    line-height: 0.95;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  section[id] {
+    scroll-margin-top: 72px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 3px;
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* The backdrop the 3D objects stand in: white, with a soft teal tint where the floor would be */
+.studio {
+  background: radial-gradient(
+    ellipse 60% 50% at 64% 72%,
+    #e3f1ee 0%,
+    var(--color-paper) 70%
+  );
+}
+
+/* Black monospace label, used for the hero badges and the scene hints */
+.label-box {
+  display: inline-block;
+  background: var(--color-ink);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1;
+  padding: 0.5rem 0.9rem;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-mute);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+}
+
+.button {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  padding: 0.85rem 1.5rem;
+  border: 1.5px solid var(--color-ink);
+  transition:
+    background-color 200ms,
+    color 200ms,
+    transform 100ms;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.button-solid {
+  background: var(--color-ink);
+  color: #fff;
+}
+
+.button-solid:hover {
+  background: var(--color-teal);
+  border-color: var(--color-teal);
+}
+
+.button-outline:hover {
+  background: var(--color-ink);
+  color: #fff;
+}
+
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Fine film grain over the whole page, so the white reads as paper */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee {
+    animation: none;
+  }
+}
