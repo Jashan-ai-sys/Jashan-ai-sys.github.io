@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 
-import PhoneCanvas from "./canvas/phone";
-import { MARQUEE } from "../constants";
+import { HERO, MARQUEE } from "../constants";
+
+// The 3D scene pulls in three.js, so it loads after the text has painted.
+const PhoneCanvas = lazy(() => import("./canvas/phone"));
 
 const TIME_FORMAT = new Intl.DateTimeFormat("en-IN", {
   timeZone: "Asia/Kolkata",
@@ -28,13 +30,15 @@ export const Hero = () => {
   const [answeredAt, setAnsweredAt] = useState<number | null>(null);
 
   return (
-    <section className="studio relative w-full md:h-dvh md:min-h-[640px] overflow-hidden">
-      <PhoneCanvas
-        answeredAt={answeredAt}
-        onToggle={() =>
-          setAnsweredAt((current) => (current === null ? performance.now() : null))
-        }
-      />
+    <section className="studio relative w-full md:h-dvh md:min-h-[760px] overflow-hidden">
+      <Suspense fallback={<div className="h-[400px] md:hidden" />}>
+        <PhoneCanvas
+          answeredAt={answeredAt}
+          onToggle={() =>
+            setAnsweredAt((current) => (current === null ? performance.now() : null))
+          }
+        />
+      </Suspense>
 
       {/* Name badges */}
       <div className="hidden md:flex absolute top-20 right-12 flex-col items-end gap-1.5 pointer-events-none">
@@ -46,13 +50,11 @@ export const Hero = () => {
       {/* Pitch */}
       <div className="relative px-6 pb-24 md:px-0 md:pb-0 md:absolute md:bottom-24 md:left-12 md:max-w-[44%] pointer-events-none">
         <h1 className="text-[48px] sm:text-[72px] lg:text-[88px]">
-          AI agents that pick up the phone
-          <span className="text-teal"> and know what to say.</span>
+          {HERO.headline}
+          <span className="text-teal"> {HERO.headlineAccent}</span>
         </h1>
         <p className="mt-5 max-w-[52ch] text-[17px] leading-7 text-mute">
-          I build voice agents, chatbots and automation for businesses, test
-          them before they meet a customer, and can run them on your own
-          servers.
+          {HERO.summary}
         </p>
         <div className="mt-7 flex flex-wrap gap-3 pointer-events-auto">
           <a href="#work" className="button button-solid">

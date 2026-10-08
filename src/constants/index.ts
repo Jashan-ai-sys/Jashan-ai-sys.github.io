@@ -1,5 +1,14 @@
 // Contains constant data for using in website
 
+export const SITE_URL = "https://jashan-ai-sys.github.io/";
+
+export const HERO = {
+  headline: "AI agents that pick up the phone",
+  headlineAccent: "and know what to say.",
+  summary:
+    "I build voice agents, chatbots and automation for businesses, test them before they meet a customer, and can run them on your own servers.",
+} as const;
+
 export const NAV_LINKS = [
   { id: "work", title: "Work" },
   { id: "services", title: "Services" },
@@ -57,6 +66,45 @@ export const PROJECTS = [
       "Support agents had to remember to chase outside parties who had not replied. I built a scheduled service that finds waiting tickets, counts working days and drafts each reminder on the original thread for an agent to review and send.",
   },
 ] as const;
+
+// Public projects with source code on GitHub
+export const OPEN_PROJECTS: readonly {
+  name: string;
+  tags: readonly string[];
+  description: string;
+  code: string;
+  demo?: string;
+}[] = [
+  {
+    name: "Payment recovery voice agent",
+    tags: ["Voice AI", "Hindi", "Twilio", "Cloud Run"],
+    description:
+      "Built for the Razorpay AI Buildathon. It spots subscription payments at risk, decides when to call, and phones the customer in Hindi to recover the payment, sending a payment link during the call. On a production call the agent replied about 1.1 seconds after the customer stopped speaking.",
+    code: "https://github.com/Jashan-ai-sys/dunning-agent",
+  },
+  {
+    name: "Multi-agent customer support",
+    tags: ["Multi-agent", "MCP", "Gemini"],
+    description:
+      "Built for the Ksolves Agentic AI Hackathon 2026. A team of AI agents resolves support tickets on its own: one scores the risk, one plans, one checks the plan against company policy, one carries it out, and every step is written to an audit log.",
+    code: "https://github.com/Jashan-ai-sys/ShopWave-MultiAgent-Customer-Support-System",
+  },
+  {
+    name: "Sales call intelligence",
+    tags: ["Whisper", "Llama", "RAG", "FastAPI"],
+    description:
+      "Turns sales-call recordings into transcripts, detects intent, sentiment and objections, picks out the turning points in each call, and shows a summary, a score and coaching notes on a dashboard.",
+    code: "https://github.com/Jashan-ai-sys/AI-Sales-Call-Intelligence-System",
+  },
+  {
+    name: "AI savings coach",
+    tags: ["Next.js", "LLM chat", "Fintech"],
+    description:
+      "Built for a fintech hackathon. It reads a user's transactions, works out how much is safe to save, recommends a fixed deposit to match, and explains the recommendation in a chat.",
+    code: "https://github.com/Jashan-ai-sys/YieldWise",
+    demo: "https://yield-wise-66gr.vercel.app/",
+  },
+];
 
 export const SERVICES = [
   {

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jashan-ai-sys.github.io/sitemap.xml
