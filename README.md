@@ -1,7 +1,9 @@
 # Jashanprit Singh: portfolio
 
-Single-tone 3D portfolio site (React, three.js via react-three-fiber, Tailwind).
+Single-page portfolio site (React, Tailwind), with an animated mascot.
 Started from the MIT-licensed [sanidhyy/3d-portfolio](https://github.com/sanidhyy/3d-portfolio) template; see `LICENSE.md`.
+
+The mascot is rendered by [`@bible-strong/avatar-react`](https://github.com/smontlouis/bible-strong-avatar-lab) by Stéphane Montlouis-Calixte, licensed AGPL-3.0-only. The built site bundles it, so the site as published is covered by the AGPL and this repository is its corresponding source. The licence text is in `LICENSE-AGPL-3.0.txt`; the site's own code stays under the MIT terms in `LICENSE.md`.
 
 ## Run
 ```bash

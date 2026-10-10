@@ -1,8 +1,4 @@
-import { Suspense, lazy } from "react";
-
 import { OPEN_PROJECTS, PROJECTS } from "../constants";
-
-const DeliveryCanvas = lazy(() => import("./canvas/delivery"));
 
 type ProjectRowProps = {
   index: number;
@@ -18,7 +14,7 @@ const ProjectRow = ({ index, name, tags, description, aside }: ProjectRowProps) 
       {String(index + 1).padStart(2, "0")}
     </span>
     <div>
-      <h3 className="text-[44px] sm:text-[56px]">{name}</h3>
+      <h3 className="text-[34px] sm:text-[56px]">{name}</h3>
       <ul className="mt-3 flex flex-wrap gap-2">
         {tags.map((tag) => (
           <li key={tag} className="chip">
@@ -38,7 +34,7 @@ const LINK_CLASS = "text-teal underline underline-offset-4 hover:no-underline";
 export const Works = () => (
   <section id="work" className="max-w-7xl mx-auto px-6 sm:px-12 py-24 sm:py-32">
     <div className="flex flex-wrap items-end justify-between gap-6">
-      <h2 className="text-[64px] sm:text-[88px]">Selected work</h2>
+      <h2 className="text-[46px] sm:text-[88px]">Selected work</h2>
       <p className="max-w-[38ch] text-mute md:text-right">
         Systems I have built and run in production. Company names are withheld
         for confidentiality.
@@ -58,17 +54,8 @@ export const Works = () => (
       ))}
     </ol>
 
-    <figure className="studio relative mt-16 h-[320px] sm:h-[420px] border border-line">
-      <Suspense fallback={null}>
-        <DeliveryCanvas />
-      </Suspense>
-      <figcaption className="label-box absolute left-4 bottom-4">
-        Delivery follow-up: the truck, the door, the parcel
-      </figcaption>
-    </figure>
-
     <div className="mt-28 flex flex-wrap items-end justify-between gap-6">
-      <h2 className="text-[64px] sm:text-[88px]">Open projects</h2>
+      <h2 className="text-[46px] sm:text-[88px]">Open projects</h2>
       <p className="max-w-[38ch] text-mute md:text-right">
         Projects I built on my own time, mostly for hackathons. The code is
         public, so you can read exactly how they work.
@@ -79,28 +66,25 @@ export const Works = () => (
       {OPEN_PROJECTS.map((project, i) => (
         <ProjectRow
           key={project.name}
-          index={i}
+          index={PROJECTS.length + i}
           name={project.name}
           tags={project.tags}
           description={project.description}
           aside={
-            <ul className="flex md:flex-col gap-x-6 gap-y-2">
-              <li>
-                <a href={project.code} target="_blank" rel="noreferrer noopener" className={LINK_CLASS}>
-                  Code
-                </a>
-              </li>
-              {project.demo && (
-                <li>
-                  <a href={project.demo} target="_blank" rel="noreferrer noopener" className={LINK_CLASS}>
-                    Live demo
-                  </a>
-                </li>
-              )}
-            </ul>
+            <a href={project.code} target="_blank" rel="noreferrer noopener" className={LINK_CLASS}>
+              Code
+            </a>
           }
         />
       ))}
     </ol>
+
+    <p className="mt-14 text-[17px]">
+      Have a process like one of these?{" "}
+      <a href="#contact" className={LINK_CLASS}>
+        Tell me about it
+      </a>
+      .
+    </p>
   </section>
 );

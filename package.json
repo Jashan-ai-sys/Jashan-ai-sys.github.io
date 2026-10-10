@@ -10,6 +10,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@bible-strong/avatar-react": "0.1.0",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.8.1",
     "react": "^19.2.8",
@@ -27,5 +28,5 @@
     "vite": "^8.3.1"
   },
   "description": "Portfolio of Jashanprit Singh: AI voice agents, chatbots and automation",
-  "license": "MIT"
+  "license": "MIT AND AGPL-3.0-only"
 }

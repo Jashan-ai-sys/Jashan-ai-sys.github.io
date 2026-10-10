@@ -2,8 +2,12 @@ import { Contact } from "./components/contact";
 import Footer from "./components/footer";
 import { Hero } from "./components/hero";
 import { Navbar } from "./components/navbar";
+import { Optional } from "./components/optional";
 import { Process, Services } from "./components/services";
 import { Works } from "./components/works";
+import { lazyOptional } from "./lib/lazy-optional";
+
+const Mascot = lazyOptional(() => import("./components/mascot"));
 
 // App
 const App = () => (
@@ -14,7 +18,7 @@ const App = () => (
     >
       Skip to content
     </a>
-    <div className="grain" aria-hidden />
+    <div className="grain hidden md:block" aria-hidden />
     <Navbar />
     <main>
       <Hero />
@@ -24,6 +28,9 @@ const App = () => (
       <Contact />
     </main>
     <Footer />
+    <Optional>
+      <Mascot />
+    </Optional>
   </>
 );
 

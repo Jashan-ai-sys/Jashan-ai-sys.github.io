@@ -2,7 +2,7 @@ import { NAV_LINKS } from "../constants";
 
 // Navbar
 export const Navbar = () => (
-  <nav className="fixed top-0 inset-x-0 z-20 bg-paper/85 backdrop-blur-sm border-b border-line">
+  <nav className="fixed top-0 inset-x-0 z-20 bg-paper/95 backdrop-blur-sm border-b border-line">
     <div className="max-w-7xl mx-auto px-6 sm:px-12 h-14 flex items-center justify-between">
       <a href="#" className="font-hand font-bold text-[30px] leading-none">
         Jashanprit.

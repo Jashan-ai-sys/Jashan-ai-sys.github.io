@@ -39,7 +39,8 @@ const staticContent = (): Plugin => ({
     ).join(" ");
 
     const content = [
-      `<main>`,
+      // Plain but tidy, for the moment before the script draws the real page
+      `<main style="max-width:60ch;margin:0 auto;padding:5rem 1.5rem;font-family:system-ui,sans-serif;line-height:1.6">`,
       `<h1>${escapeHtml(`${HERO.headline} ${HERO.headlineAccent}`)}</h1><p>${escapeHtml(HERO.summary)}</p>`,
       `<section><h2>Selected work</h2>${projects}</section>`,
       `<section><h2>What I can build for you</h2>${services}</section>`,

@@ -1,7 +1,7 @@
-import { ContactShadows, useGLTF } from "@react-three/drei";
+import { ContactShadows, Environment, Lightformer } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useRef } from "react";
-import { CanvasTexture, SRGBColorSpace, Vector3 } from "three";
+import { CanvasTexture, ExtrudeGeometry, SRGBColorSpace, Shape, Vector3 } from "three";
 import type { BufferAttribute, Group, Mesh, MeshBasicMaterial, Points } from "three";
 
 import { useInView } from "../../hooks/use-in-view";
@@ -11,9 +11,23 @@ const TEAL = "#0e7c72";
 const MARIGOLD = "#f0a52e";
 const RING_COUNT = 3;
 
-// The call screen is drawn at twice the size of the model's screen face (0.54 x 0.98 units).
+// The phone, in scene units. It stands on its bottom edge, so its centre is half its height up.
+const BODY = { width: 0.62, height: 1.1, depth: 0.08, corner: 0.085, edge: 0.018 };
+const GLASS = { width: 0.6, height: 1.08, depth: 0.006, corner: 0.076, edge: 0.002 };
+const DISPLAY = { width: 0.565, height: 1.025 };
+// [x, y, height] of the power button on the right edge and the two volume buttons on the left
+const SIDE_BUTTONS = [
+  [0.31, 0.2, 0.11],
+  [-0.31, 0.26, 0.075],
+  [-0.31, 0.15, 0.075],
+] as const;
+
+const FRAME_METAL = { color: "#4a5257", metalness: 0.9, roughness: 0.24 };
+
+// The call screen is drawn at the display's proportions and laid over the glass.
 const SCREEN_WIDTH = 540;
 const SCREEN_HEIGHT = 980;
+const SCREEN_CORNER = 58;
 const WAVE_BARS = 19;
 
 const OVERVIEW = {
@@ -26,6 +40,26 @@ const CLOSE_UP = {
 };
 // Angle that turns the phone's screen toward the overview camera
 const FACING_CAMERA = Math.atan2(OVERVIEW.position.x, OVERVIEW.position.z);
+
+// A flat slab with rounded corners and softened edges, centred on the origin: the phone's body and its glass.
+const roundedSlab = ({ width, height, depth, corner, edge }: typeof BODY) => {
+  const w = width / 2 - edge;
+  const h = height / 2 - edge;
+  const r = corner - edge;
+  const outline = new Shape()
+    .absarc(w - r, -h + r, r, -Math.PI / 2, 0, false)
+    .absarc(w - r, h - r, r, 0, Math.PI / 2, false)
+    .absarc(-w + r, h - r, r, Math.PI / 2, Math.PI, false)
+    .absarc(-w + r, -h + r, r, Math.PI, Math.PI * 1.5, false);
+
+  return new ExtrudeGeometry(outline, {
+    depth: depth - 2 * edge,
+    bevelThickness: edge,
+    bevelSize: edge,
+    bevelSegments: 8,
+    curveSegments: 24,
+  }).center();
+};
 
 // Two slow sines multiplied give an uneven rise and fall between 0 and 1, close to the rhythm of speech.
 const speechLoudness = (time: number) =>
@@ -44,8 +78,19 @@ const drawCallScreen = (
 ) => {
   const centerX = SCREEN_WIDTH / 2;
   const answered = callSeconds !== null;
+  // Rounded display corners; outside them the texture stays clear so the glass shows through
+  ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   ctx.fillStyle = "#0c0c0d";
-  ctx.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  ctx.beginPath();
+  ctx.roundRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_CORNER);
+  ctx.fill();
+
+  // Front camera
+  ctx.fillStyle = "#000000";
+  ctx.beginPath();
+  ctx.arc(centerX, 46, 13, 0, Math.PI * 2);
+  ctx.fill();
+
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
@@ -176,7 +221,7 @@ const SignalRings = () => {
   );
 };
 
-// A live-drawn call screen laid just in front of the model's own screen face.
+// A live-drawn call screen laid just in front of the phone's glass.
 const CallScreen = ({ answeredAt }: CallProps) => {
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
@@ -199,16 +244,25 @@ const CallScreen = ({ answeredAt }: CallProps) => {
   });
 
   return (
-    <mesh position={[0, 0.56, 0.0465]}>
-      <planeGeometry args={[0.54, 0.98]} />
-      <meshBasicMaterial map={texture} toneMapped={false} />
+    <mesh position={[0, 0, BODY.depth / 2 + GLASS.depth + 0.0005]}>
+      <planeGeometry args={[DISPLAY.width, DISPLAY.height]} />
+      <meshBasicMaterial map={texture} toneMapped={false} transparent />
     </mesh>
   );
 };
 
 const Phone = ({ answeredAt }: CallProps) => {
   const ref = useRef<Group>(null);
-  const { scene } = useGLTF("./models/phone.glb");
+  const body = useMemo(() => roundedSlab(BODY), []);
+  const glass = useMemo(() => roundedSlab(GLASS), []);
+
+  useEffect(
+    () => () => {
+      body.dispose();
+      glass.dispose();
+    },
+    [body, glass],
+  );
 
   useFrame(({ clock, pointer }) => {
     if (!ref.current) return;
@@ -220,8 +274,23 @@ const Phone = ({ answeredAt }: CallProps) => {
 
   return (
     <group ref={ref} position={[0, 0.12, 0]} scale={1.5}>
-      <primitive object={scene} />
-      <CallScreen answeredAt={answeredAt} />
+      <group position={[0, BODY.height / 2, 0]}>
+        {/* Metal frame and back */}
+        <mesh geometry={body}>
+          <meshPhysicalMaterial {...FRAME_METAL} />
+        </mesh>
+        {SIDE_BUTTONS.map(([x, y, height]) => (
+          <mesh key={`${x}:${y}`} position={[x, y, 0]}>
+            <boxGeometry args={[0.012, height, 0.022]} />
+            <meshPhysicalMaterial {...FRAME_METAL} />
+          </mesh>
+        ))}
+        {/* Front glass */}
+        <mesh geometry={glass} position={[0, 0, BODY.depth / 2 + GLASS.depth / 2]}>
+          <meshPhysicalMaterial color="#050506" roughness={0.08} clearcoat={1} />
+        </mesh>
+        <CallScreen answeredAt={answeredAt} />
+      </group>
     </group>
   );
 };
@@ -255,7 +324,16 @@ const PhoneCanvas = ({ answeredAt, onToggle }: PhoneCanvasProps) => {
   return (
     <div
       ref={ref}
+      role="button"
+      tabIndex={0}
+      aria-pressed={answeredAt !== null}
+      aria-label="Demo call from an AI agent. Press to answer, press again to hang up."
       onClick={onToggle}
+      onKeyDown={(e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        onToggle();
+      }}
       className="relative h-[400px] md:absolute md:inset-0 md:h-full cursor-pointer"
     >
       {isInView && (
@@ -268,6 +346,18 @@ const PhoneCanvas = ({ answeredAt, onToggle }: PhoneCanvasProps) => {
           <Suspense fallback={null}>
             <ambientLight intensity={1.5} />
             <directionalLight position={[4, 7, 3]} intensity={2.6} />
+            {/* Soft studio panels for the phone's metal and glass to reflect; built in the scene, so nothing is downloaded */}
+            <Environment resolution={256}>
+              <Lightformer intensity={3} position={[0, 5, 4]} rotation-x={-Math.PI / 3} scale={[10, 4, 1]} />
+              <Lightformer intensity={2} position={[6, 2, 2]} rotation-y={-Math.PI / 2} scale={[8, 3, 1]} />
+              <Lightformer
+                intensity={1.5}
+                color="#d9f1ed"
+                position={[-6, 1, 1]}
+                rotation-y={Math.PI / 2}
+                scale={[8, 3, 1]}
+              />
+            </Environment>
             <CameraRig answeredAt={answeredAt} />
             <mesh position={[0, 0.06, 0]}>
               <cylinderGeometry args={[0.95, 0.95, 0.12, 72]} />
@@ -276,7 +366,7 @@ const PhoneCanvas = ({ answeredAt, onToggle }: PhoneCanvasProps) => {
             <Ripple answeredAt={answeredAt} />
             <SignalRings />
             <Phone answeredAt={answeredAt} />
-            <ContactShadows opacity={0.3} scale={9} blur={2.6} far={2.5} color="#0b3a36" />
+            <ContactShadows frames={1} opacity={0.3} scale={9} blur={2.6} far={2.5} color="#0b3a36" />
           </Suspense>
         </Canvas>
       )}
