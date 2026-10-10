@@ -4,7 +4,7 @@ import { HERO_RUNS } from "../constants";
 import { useInView } from "../hooks/use-in-view";
 import { prefillContact } from "../lib/contact";
 import { cueMascot } from "../lib/mascot";
-import { reduceMotion } from "./canvas/motion";
+import { reduceMotion } from "../lib/motion";
 
 const STEP_MS = 900;
 // Four steps and the outcome
@@ -21,7 +21,7 @@ const jobFromHash = () => {
 // A worked example of one business job going from arrival to done, and of the same job going wrong
 // on purpose. It is scripted, and says so on the card.
 export const RunSheet = () => {
-  const { ref, isInView } = useInView({ rootMargin: "0px", threshold: 0.4 });
+  const { ref, isInView } = useInView({ rootMargin: "0px", threshold: 0.15 });
   const [started, setStarted] = useState(false);
   const [job, setJob] = useState(jobFromHash);
   const [awkward, setAwkward] = useState(false);
@@ -36,6 +36,13 @@ export const RunSheet = () => {
   useEffect(() => {
     if (isInView) setStarted(true);
   }, [isInView]);
+
+  // A press always starts a run, from a blank sheet, even if the card never came far enough into view
+  const restart = () => {
+    setStarted(true);
+    if (!reduceMotion) setShown(0);
+    setReplays(replays + 1);
+  };
 
   useEffect(() => {
     if (!started || reduceMotion) return;
@@ -71,11 +78,11 @@ export const RunSheet = () => {
             key={option.id}
             type="button"
             aria-pressed={i === job}
-            className={i === job ? "job-button job-button-on" : "job-button"}
+            className="job-button"
             onClick={() => {
               setJob(i);
               setAwkward(false);
-              setReplays(replays + 1);
+              restart();
             }}
           >
             {option.title}
@@ -114,23 +121,29 @@ export const RunSheet = () => {
       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[12px]">
         <button
           type="button"
-          aria-pressed={awkward}
           className="job-button"
-          onClick={() => setAwkward(!awkward)}
+          onClick={() => {
+            setAwkward(!awkward);
+            restart();
+          }}
         >
           {awkward ? "Back to the normal one" : "Now try an awkward one"}
         </button>
         <button
           type="button"
           className="underline underline-offset-4 hover:text-teal"
-          onClick={() => setReplays(replays + 1)}
+          onClick={restart}
         >
           Replay
         </button>
         <a
           href="#contact"
           className="text-teal underline underline-offset-4 hover:no-underline"
-          onClick={() => prefillContact(`My job is like: ${run.title.toLowerCase()}. `)}
+          onClick={(e) => {
+            // The handler scrolls to the message field itself; the address is only the fallback
+            e.preventDefault();
+            prefillContact(`My job is like: ${run.title.toLowerCase()}. `);
+          }}
         >
           Have a job like this? Tell me about it
         </a>

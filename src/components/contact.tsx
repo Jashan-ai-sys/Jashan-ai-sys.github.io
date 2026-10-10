@@ -24,7 +24,7 @@ const FIELDS = [
     autoComplete: "name",
     maxLength: 200,
     isValid: isValidContactName,
-    error: "Enter your name (at least 3 characters).",
+    error: "Enter your name.",
     hint: "Who am I talking to?",
   },
   {
@@ -72,13 +72,19 @@ const ContactForm = () => {
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState<keyof typeof STATUS_NOTES>("idle");
 
-  // A visitor's own words are never overwritten
+  // A visitor's own words are never overwritten; an earlier prefill is
+  const prefilled = useRef("");
   useEffect(
     () =>
       onContactPrefill((text) => {
-        setForm((current) => (current.message ? current : { ...current, message: text }));
-        // After the link's own jump to #contact, which would otherwise take the focus back
-        setTimeout(() => document.getElementById("message")?.focus({ preventScroll: true }));
+        const previous = prefilled.current;
+        prefilled.current = text;
+        setForm((current) =>
+          current.message && current.message !== previous ? current : { ...current, message: text },
+        );
+        const field = document.getElementById("message");
+        field?.scrollIntoView({ block: "center" });
+        field?.focus({ preventScroll: true });
       }),
     [],
   );

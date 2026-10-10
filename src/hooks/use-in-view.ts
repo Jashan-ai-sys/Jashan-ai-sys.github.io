@@ -3,16 +3,14 @@ import { useEffect, useRef, useState } from "react";
 type UseInViewOptions = {
   rootMargin?: string;
   threshold?: number;
-  initialVisible?: boolean;
 };
 
 export function useInView<T extends HTMLElement = HTMLDivElement>({
   rootMargin = "150px",
   threshold = 0,
-  initialVisible = false,
 }: UseInViewOptions = {}) {
   const ref = useRef<T>(null);
-  const [isInView, setIsInView] = useState(initialVisible);
+  const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
     const element = ref.current;

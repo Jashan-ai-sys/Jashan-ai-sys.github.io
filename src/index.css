@@ -198,7 +198,6 @@
   border-color: var(--color-ink);
 }
 
-.job-button-on,
 .job-button[aria-pressed="true"] {
   background: var(--color-ink);
   border-color: var(--color-ink);
@@ -207,7 +206,7 @@
 
 /* Tall enough for the longest run, so nothing below moves as rows appear */
 .run-steps {
-  min-height: 16.25rem;
+  min-height: 19rem;
 }
 
 @media (min-width: 640px) {

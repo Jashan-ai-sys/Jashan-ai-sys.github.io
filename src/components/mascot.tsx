@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { MASCOT_TOUR } from "../constants";
 import definition from "../echo.avatar.json";
 import { MASCOT_EVENT, type MascotCue } from "../lib/mascot";
-import { reduceMotion } from "./canvas/motion";
+import { reduceMotion } from "../lib/motion";
 
 const Echo = createAvatar(definition);
 
@@ -207,7 +207,8 @@ const Mascot = () => {
         follow();
       }
       play(animation, CUE_MS);
-      if (text) say({ text }, CUE_MS);
+      // On a phone, a bubble from the corner would cover the page's last lines; beside a field it has room
+      if (text && (live.field || !NARROW_SCREEN.matches)) say({ text }, CUE_MS);
     };
 
     // Leave the form once focus moves off its fields

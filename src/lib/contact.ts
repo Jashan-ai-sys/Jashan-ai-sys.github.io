@@ -31,7 +31,7 @@ export type ContactFormFields = {
 
 export const isValidContactName = (name: string): boolean => {
   const trimmed = name.trim();
-  return trimmed.length >= 3 && trimmed.length <= 200;
+  return trimmed.length >= 2 && trimmed.length <= 200;
 };
 
 export const isValidContactEmail = (email: string): boolean => {

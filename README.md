@@ -15,8 +15,7 @@ npm run build    # static site in dist/
 ## Edit content
 - Projects, services, process steps and the skills strip: `src/constants/index.ts`
 - Contact email: `CONTACT_EMAIL` in `src/lib/contact.ts`; profile links: `PROFILE_LINKS` in `src/constants/index.ts`
-- Hero text: `src/components/hero.tsx`
-- 3D scenes: `src/components/canvas/` (models in `public/models/`)
+- Hero text and the card's jobs: `HERO` and `HERO_RUNS` in `src/constants/index.ts`
 
 ## Deploy
 The built site is the `dist/` folder: static files that work at a domain root or in any sub-folder.

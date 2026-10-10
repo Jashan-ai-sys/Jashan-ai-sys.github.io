@@ -21,12 +21,15 @@ const escapeHtml = (text: string) =>
 const staticContent = (): Plugin => ({
   name: "static-content",
   transformIndexHtml(html) {
-    const projects = [...PROJECTS, ...OPEN_PROJECTS]
-      .map(
-        (project) =>
-          `<article><h3>${escapeHtml(project.name)}</h3><p>${escapeHtml(project.description)}</p></article>`,
-      )
-      .join("");
+    const listed = (projects: readonly { name: string; description: string; code?: string }[]) =>
+      projects
+        .map(
+          (project) =>
+            `<article><h3>${escapeHtml(project.name)}</h3><p>${escapeHtml(project.description)}</p>${
+              project.code ? `<a href="${project.code}">Code</a>` : ""
+            }</article>`,
+        )
+        .join("");
     const services = SERVICES.map(
       (service) =>
         `<h3>${escapeHtml(service.title)}</h3><ul>${service.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`,
@@ -42,7 +45,8 @@ const staticContent = (): Plugin => ({
       // Plain but tidy, for the moment before the script draws the real page
       `<main style="max-width:60ch;margin:0 auto;padding:5rem 1.5rem;font-family:system-ui,sans-serif;line-height:1.6">`,
       `<h1>${escapeHtml(`${HERO.headline} ${HERO.headlineAccent}`)}</h1><p>${escapeHtml(HERO.summary)}</p>`,
-      `<section><h2>Selected work</h2>${projects}</section>`,
+      `<section><h2>Selected work</h2>${listed(PROJECTS)}</section>`,
+      `<section><h2>Open projects</h2>${listed(OPEN_PROJECTS)}</section>`,
       `<section><h2>What I can build for you</h2>${services}</section>`,
       `<section><h2>How a project runs</h2><ol>${steps}</ol></section>`,
       `<section><h2>Contact</h2><p>Jashanprit Singh, AI Engineer. <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> ${links}</p></section>`,

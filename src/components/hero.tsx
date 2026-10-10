@@ -27,10 +27,10 @@ export const Hero = () => {
 
   return (
     <section id="top" className="studio relative w-full overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 pt-24 pb-24 md:pb-28 md:min-h-dvh grid md:grid-cols-[1fr_minmax(0,480px)] gap-10 md:gap-14">
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 pt-24 pb-24 lg:pb-28 lg:min-h-dvh grid lg:grid-cols-[1fr_minmax(0,480px)] gap-10 lg:gap-14">
         <div className="flex flex-col justify-between gap-10">
           {/* Name badges */}
-          <div className="hidden md:flex flex-col items-start gap-1.5">
+          <div className="hidden lg:flex flex-col items-start gap-1.5">
             <span className="label-box">Jashanprit Singh</span>
             <span className="label-box">AI Engineer</span>
             <span className="label-box tabular-nums">{clock}</span>
@@ -38,7 +38,7 @@ export const Hero = () => {
 
           {/* Pitch */}
           <div>
-            <p className="md:hidden mb-3 font-mono text-[13px] text-mute">
+            <p className="lg:hidden mb-3 font-mono text-[13px] text-mute">
               Jashanprit Singh · AI Engineer
             </p>
             <h1 className="text-[44px] sm:text-[64px] lg:text-[80px]">
@@ -60,7 +60,7 @@ export const Hero = () => {
           </div>
         </div>
 
-        <div className="md:self-end">
+        <div className="lg:self-end">
           <RunSheet />
         </div>
       </div>
