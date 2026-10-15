@@ -5,6 +5,8 @@ Started from the MIT-licensed [sanidhyy/3d-portfolio](https://github.com/sanidhy
 
 The mascot is rendered by [`@bible-strong/avatar-react`](https://github.com/smontlouis/bible-strong-avatar-lab) by Stéphane Montlouis-Calixte, licensed AGPL-3.0-only. The built site bundles it, so the site as published is covered by the AGPL and this repository is its corresponding source. The licence text is in `LICENSE-AGPL-3.0.txt`; the site's own code stays under the MIT terms in `LICENSE.md`.
 
+The furry creature in the hero runs on fur code from Google AI Studio's "3D GPU Fur Simulation" sample (`src/fur/`, all but `mount.ts`), with its face recoloured. The sample's source states no licence.
+
 ## Run
 ```bash
 npm install

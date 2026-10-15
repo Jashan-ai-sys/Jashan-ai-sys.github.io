@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 
 import { HERO, MARQUEE } from "../constants";
+import { lazyOptional } from "../lib/lazy-optional";
+import { Optional } from "./optional";
 import { RunSheet } from "./run-sheet";
+
+// three.js is large, so the puff loads after the page, and only where the gap beside the badges is
+// wide enough for it: narrower, it would sit on the clock and the headline
+const MochiPuff = lazyOptional(() => import("./mochi-puff"));
+const ROOM_FOR_PUFF = window.matchMedia("(min-width: 75rem)").matches;
 
 const TIME = { hour: "numeric", minute: "2-digit" } as const;
 const IST_TIME = new Intl.DateTimeFormat("en-IN", { ...TIME, timeZone: "Asia/Kolkata" });
@@ -29,11 +36,16 @@ export const Hero = () => {
     <section id="top" className="studio relative w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 sm:px-12 pt-24 pb-24 lg:pb-28 lg:min-h-dvh grid lg:grid-cols-[1fr_minmax(0,480px)] gap-10 lg:gap-14">
         <div className="flex flex-col justify-between gap-10">
-          {/* Name badges */}
-          <div className="hidden lg:flex flex-col items-start gap-1.5">
+          {/* Name badges, with the puff in the space beside them */}
+          <div className="relative hidden lg:flex flex-col items-start gap-1.5">
             <span className="label-box">Jashanprit Singh</span>
             <span className="label-box">AI Engineer</span>
             <span className="label-box tabular-nums">{clock}</span>
+            {ROOM_FOR_PUFF && (
+              <Optional>
+                <MochiPuff />
+              </Optional>
+            )}
           </div>
 
           {/* Pitch */}

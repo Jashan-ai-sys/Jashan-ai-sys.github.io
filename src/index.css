@@ -98,6 +98,17 @@
   );
 }
 
+/* The furry creature beside the hero's badges, standing on a soft teal shadow. It sits over the
+   empty space rather than in the flow, so it never pushes the headline down. */
+.puff {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 230px;
+  height: 190px;
+  background: radial-gradient(ellipse 34% 7% at 50% 90%, rgb(14 124 114 / 0.18), transparent);
+}
+
 /* Black monospace label, used for the hero badges and the card's label */
 .label-box {
   display: inline-block;
